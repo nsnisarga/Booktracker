@@ -1,0 +1,21 @@
+.viewBook {
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 8px; /* Adjust the border radius as needed */
+    background-color: #FF9800; /* Use a more vibrant color */
+    color: #FFFFFF;
+    text-decoration: none;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .viewBook:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+    background-color: #FFC107; 
+  }
+  body, html {
+    margin: 0;
+    padding: 0;
+  }
+  

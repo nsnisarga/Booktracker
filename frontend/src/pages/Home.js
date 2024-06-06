@@ -1,23 +1,30 @@
-import React from 'react';
-import "./Home.css";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from 'react';
+import './Home.css';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:1000/api/v1/getBooks`);
+      const response = await axios.post('http://localhost:1000/api/v1/searchBooks', {
+        query: searchTerm
+      });
       if (response.data && response.data.books && response.data.books.length > 0) {
-        navigate('/books');
+        setSearchResults(response.data.books);
+        setErrorMessage('');
       } else {
-        alert('No books found.');
+        setSearchResults([]);
+        setErrorMessage('No books found.');
       }
     } catch (err) {
       console.error('Search error:', err.response ? err.response.data : err.message);
-      alert(`Failed to search books. ${err.response ? err.response.data.message : err.message}`);
+      setSearchResults([]);
+      setErrorMessage(`Failed to search books. ${err.response ? err.response.data.message : err.message}`);
     }
   };
 
@@ -34,9 +41,23 @@ const Home = () => {
               type="text" 
               className="form-control" 
               placeholder="Search Books" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button type="submit" className="btn btn-success ms-2">Search</button>
           </form>
+          {errorMessage && <p className="text-danger">{errorMessage}</p>}
+          {searchResults.length > 0 && (
+            <div className="search-results">
+              {searchResults.map((book, index) => (
+                <div key={index} className="search-result my-3">
+                  <h2>{book.bookname}</h2>
+                  <p><strong>Author:</strong> {book.author}</p>
+                  <p>{book.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
           <Link to="/books" className="viewBook my-3 text-center">View Books</Link>
         </div>
         <div className="col-lg-6 px-0" style={{ height: "91.5vh", overflow: "hidden" }}>

@@ -77,4 +77,19 @@ router.delete("/deleteBook/:id", async (req, res) => {
     }
 });
 
+router.post("/searchBooks", async (req, res) => {
+    const { query } = req.body;
+    try {
+        const books = await booksModel.find({ bookname: { $regex: query, $options: 'i' } });
+        if (books.length > 0) {
+            res.status(200).json({ books });
+        } else {
+            res.status(200).json({ books: [] });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Failed to search books.' });
+    }
+});
+
 module.exports = router;
